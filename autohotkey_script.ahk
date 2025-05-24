@@ -37,7 +37,9 @@ RShift & .::
 }
 return
 
-RShift & ,::
+RShift & ,::ExitApp ;  
+
+RShift & m::
 {
     Suspend
     ToolTip("AHK " (A_IsSuspended ? "SUSPENDED" : "RESUMED"))
