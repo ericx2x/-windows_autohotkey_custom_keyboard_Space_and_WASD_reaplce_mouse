@@ -1,7 +1,5 @@
 #Requires AutoHotkey v2.0
 
-CapsLock::Esc
-
 ; -- Settings --
 defaultSpeed := 5
 slowSpeed := 1
@@ -66,8 +64,8 @@ CheckMouseModeTimeout() {
     }
 }
 
-; --- Adjust cursor speed with n and l keys when mouse mode active ---
-m::
+; --- Adjust cursor speed with n, m and l keys when mouse mode active (n for some reason stopped slowing down the cursor so instead m can slow down the cursor on windows version of my script) ---
+$n::
 {
     global mouseModeActive, cursorSpeed, slowSpeed
     if mouseModeActive {
@@ -75,6 +73,16 @@ m::
         return  ; block default n key behavior while mouse mode active
     }
     Send("{Blind}n")
+}
+
+$m::
+{
+    global mouseModeActive, cursorSpeed, slowSpeed
+    if mouseModeActive {
+        cursorSpeed := slowSpeed
+        return  ; block default n key behavior while mouse mode active
+    }
+    Send("{Blind}m")
 }
 
 n up::
@@ -86,7 +94,7 @@ n up::
     }
 }
 
-l::
+$l::
 {
     global mouseModeActive, cursorSpeed, fastSpeed
     if mouseModeActive {
