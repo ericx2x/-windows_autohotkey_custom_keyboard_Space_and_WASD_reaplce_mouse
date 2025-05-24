@@ -1,155 +1,184 @@
 #Requires AutoHotkey v2.0
+
 CapsLock::Esc
 
+; -- Settings --
 defaultSpeed := 5
 slowSpeed := 1
 fastSpeed := 15
 cursorSpeed := defaultSpeed
-spaceHeld := false
+
+; -- State vars --
 mouseModeActive := false
-mouseModeEnabled := true ; Toggle for space mouse mode
+spaceHeld := false
+lastSpaceRelease := 0
 
+; -- Timers --
 SetTimer(CheckKeys, 10)
+SetTimer(CheckMouseModeTimeout, 100)
 
-; Toggle mouse mode with Right Shift + ?
->?:: {
-    global mouseModeEnabled
-    if GetKeyState("RShift", "P") {
-        mouseModeEnabled := !mouseModeEnabled
-        ToolTip("Mouse Mode: " (mouseModeEnabled ? "ON" : "OFF"))
-        SetTimer(() => ToolTip(), -1000)
-    } else {
-        Send("/")
-    }
+; --- Activate mouse mode on Space + n ---
+~Space & n::
+{
+    global mouseModeActive
+    mouseModeActive := true
+    ToolTip("Mouse Mode: ON")
+    SetTimer(() => ToolTip(), -1000)
+    return
 }
 
-*Space:: {
-    global spaceHeld, mouseModeEnabled
-
-    if KeyWait("Space", "T0.15") {
-        Send(" ")
-        return
-    }
-
-    if !mouseModeEnabled {
-        return
-    }
-
+; --- Track space key hold/release ---
+~Space::
+{
+    global spaceHeld
     spaceHeld := true
     KeyWait("Space")
     spaceHeld := false
+    global lastSpaceRelease := A_TickCount
+    return
 }
 
+; --- Move mouse only if in mouse mode AND space held ---
 CheckKeys() {
-    global mouseModeActive, cursorSpeed, spaceHeld, mouseModeEnabled
+    global mouseModeActive, cursorSpeed, spaceHeld
 
-    if !mouseModeEnabled {
-        mouseModeActive := false
+    if !mouseModeActive || !spaceHeld
         return
-    }
 
-    if spaceHeld {
-        mouseModeActive := true
-        if GetKeyState("W", "P")
-            MouseMove(0, -cursorSpeed, 0, "R")
-        if GetKeyState("S", "P")
-            MouseMove(0, cursorSpeed, 0, "R")
-        if GetKeyState("A", "P")
-            MouseMove(-cursorSpeed, 0, 0, "R")
-        if GetKeyState("D", "P")
-            MouseMove(cursorSpeed, 0, 0, "R")
-    } else {
+    if GetKeyState("W", "P")
+        MouseMove(0, -cursorSpeed, 0, "R")
+    if GetKeyState("S", "P")
+        MouseMove(0, cursorSpeed, 0, "R")
+    if GetKeyState("A", "P")
+        MouseMove(-cursorSpeed, 0, 0, "R")
+    if GetKeyState("D", "P")
+        MouseMove(cursorSpeed, 0, 0, "R")
+}
+
+; --- Disable mouse mode if space not held for 500ms ---
+CheckMouseModeTimeout() {
+    global mouseModeActive, spaceHeld, lastSpaceRelease
+
+    if mouseModeActive && !spaceHeld && (A_TickCount - lastSpaceRelease > 500) {
         mouseModeActive := false
+        ToolTip("Mouse Mode: OFF")
+        SetTimer(() => ToolTip(), -1000)
     }
 }
 
-handleKey(keyName) {
-    global mouseModeActive
-    if mouseModeActive
-        return
-    Send("{Blind}" keyName)
-}
-
-*n:: {
+; --- Adjust cursor speed with n and l keys when mouse mode active ---
+m::
+{
     global mouseModeActive, cursorSpeed, slowSpeed
     if mouseModeActive {
         cursorSpeed := slowSpeed
-    } else {
-        handleKey("n")
+        return  ; block default n key behavior while mouse mode active
     }
+    Send("{Blind}n")
 }
 
-*n up:: {
+n up::
+{
     global mouseModeActive, cursorSpeed, defaultSpeed
     if mouseModeActive {
         cursorSpeed := defaultSpeed
+        return
     }
 }
 
-*l:: {
+l::
+{
     global mouseModeActive, cursorSpeed, fastSpeed
     if mouseModeActive {
         cursorSpeed := fastSpeed
-    } else {
-        handleKey("l")
+        return
     }
+    Send("{Blind}l")
 }
 
-*l up:: {
+l up::
+{
     global mouseModeActive, cursorSpeed, defaultSpeed
     if mouseModeActive {
         cursorSpeed := defaultSpeed
+        return
     }
 }
 
-*w:: {
-    handleKey("w")
+; --- Movement keys: only send if mouse mode inactive ---
+$w::
+{
+    global mouseModeActive
+    if !mouseModeActive {
+        Send("{Blind}w")
+    }
+    return
 }
 
-*a:: {
-    handleKey("a")
+$a::
+{
+    global mouseModeActive
+    if !mouseModeActive {
+        Send("{Blind}a")
+    }
+    return
 }
 
-*s:: {
-    handleKey("s")
+$s::
+{
+    global mouseModeActive
+    if !mouseModeActive {
+        Send("{Blind}s")
+    }
+    return
 }
 
-*d:: {
-    handleKey("d")
+$d::
+{
+    global mouseModeActive
+    if !mouseModeActive {
+        Send("{Blind}d")
+    }
+    return
 }
 
-*f:: {
+; --- Mouse buttons and wheel: act only if mouse mode active ---
+$f::
+{
     global mouseModeActive
     if mouseModeActive {
         Click("left")
-    } else {
-        handleKey("f")
+        return
     }
+    Send("{Blind}f")
 }
 
-*i:: {
+$i::
+{
     global mouseModeActive
     if mouseModeActive {
         Click("right")
-    } else {
-        handleKey("i")
+        return
     }
+    Send("{Blind}i")
 }
 
-*j:: {
+$j::
+{
     global mouseModeActive
     if mouseModeActive {
         Send("{WheelDown}")
-    } else {
-        handleKey("j")
+        return
     }
+    Send("{Blind}j")
 }
 
-*k:: {
+$k::
+{
     global mouseModeActive
     if mouseModeActive {
         Send("{WheelUp}")
-    } else {
-        handleKey("k")
+        return    
     }
+    Send("{Blind}k")
 }
