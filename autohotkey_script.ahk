@@ -12,7 +12,7 @@ mouseModeEnabled := true ; Toggle for space mouse mode
 SetTimer(CheckKeys, 10)
 
 ; Toggle mouse mode with Right Shift + ?
->/:: {
+>?:: {
     global mouseModeEnabled
     if GetKeyState("RShift", "P") {
         mouseModeEnabled := !mouseModeEnabled
