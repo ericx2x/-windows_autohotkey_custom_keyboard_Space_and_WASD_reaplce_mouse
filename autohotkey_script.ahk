@@ -2,36 +2,6 @@
 
 Capslock::Esc
 
-
-;Some kill switches to reload pause or suspend autohotkey - just in case
-
-#HotIf GetKeyState("RShift", "P")
-><::
-{
-    Reload
-    ToolTip("Script Reloaded")
-    SetTimer(() => ToolTip(), -1000)
-}
-#HotIf
-
-#HotIf GetKeyState("RShift", "P")
->?::
-{
-    Pause -1
-    ToolTip("AHK " (A_IsPaused ? "PAUSED" : "PAUSE ??>>RESUMED"))
-    SetTimer(() => ToolTip(), -1000)
-}
-#HotIf
-
-
-#HotIf GetKeyState("RShift", "P")
->>::
-{
-    Suspend -1
-    ToolTip("AHK " (A_IsSuspended() ? "SUSPENDED" : "SUSPEND RESUMED"))
-    SetTimer(() => ToolTip(), -1000)
-}
-#HotIf
 ; -- Settings --
 defaultSpeed := 5
 slowSpeed := 1
@@ -46,6 +16,33 @@ lastSpaceRelease := 0
 ; -- Timers --
 SetTimer(CheckKeys, 10)
 SetTimer(CheckMouseModeTimeout, 100)
+
+
+;Some kill switches to reload pause or suspend autohotkey - just in case. Press Rshift ? to reload or start the script after 
+;pausing, Rshift and > to pause and Rshift and < to suspend.
+
+RShift & /::
+{
+    ToolTip("Script Reloaded")
+    Reload
+    SetTimer(() => ToolTip(), -1000)
+}
+
+; pause
+RShift & .::
+{
+    ToolTip("AHK " (A_IsPaused ? "RESUMED" : "PAUSED"))
+    Pause 
+    SetTimer(() => ToolTip(), -1000)
+}
+return
+
+RShift & ,::
+{
+    Suspend
+    ToolTip("AHK " (A_IsSuspended ? "SUSPENDED" : "RESUMED"))
+    SetTimer(() => ToolTip(), -1000)
+}
 
 ; --- Activate mouse mode on Space + n ---
 ~Space & n::
