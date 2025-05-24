@@ -1,5 +1,37 @@
 #Requires AutoHotkey v2.0
 
+Capslock::Esc
+
+
+;Some kill switches to reload pause or suspend autohotkey - just in case
+
+#HotIf GetKeyState("RShift", "P")
+><::
+{
+    Reload
+    ToolTip("Script Reloaded")
+    SetTimer(() => ToolTip(), -1000)
+}
+#HotIf
+
+#HotIf GetKeyState("RShift", "P")
+>?::
+{
+    Pause -1
+    ToolTip("AHK " (A_IsPaused ? "PAUSED" : "PAUSE ??>>RESUMED"))
+    SetTimer(() => ToolTip(), -1000)
+}
+#HotIf
+
+
+#HotIf GetKeyState("RShift", "P")
+>>::
+{
+    Suspend -1
+    ToolTip("AHK " (A_IsSuspended() ? "SUSPENDED" : "SUSPEND RESUMED"))
+    SetTimer(() => ToolTip(), -1000)
+}
+#HotIf
 ; -- Settings --
 defaultSpeed := 5
 slowSpeed := 1
@@ -183,4 +215,3 @@ $k::
     }
     Send("{Blind}k")
 }
- 
