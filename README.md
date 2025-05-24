@@ -1,6 +1,8 @@
 This autohotkey file is a script to make the mose not necessary as the keyboard and holding space while using WASD can replace all mouse functionality. This is especially useful for coding as your hands can remain stationary on a keyboard or bluetooth keyboard making programming much more accessible.
 
 # Usage
+Must press and hold spacebar and tap the n button to enter mouse moving mode with keyboard.
+
 Holding spacebar and using WASD is the directions to move the mouse. 
 Holding down 'L' will speed up the mouse movement where holding down 'N' will slow it down. 
 'F' will left click. 
