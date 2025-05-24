@@ -139,10 +139,19 @@ $f::
 {
     global mouseModeActive
     if mouseModeActive {
-        Click("left")
+        MouseClick("left", , , 1, , "D")  ; Press and hold left mouse button
         return
     }
     Send("{Blind}f")
+}
+
+$f up::
+{
+    global mouseModeActive
+    if mouseModeActive {
+        MouseClick("left", , , 1, , "U")  ; Release left mouse button
+        return
+    }
 }
 
 $i::
