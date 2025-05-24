@@ -2,6 +2,9 @@
 
 #Requires AutoHotkey v2.0
 
+
+CapsLock::Esc
+
 defaultSpeed := 5
 slowSpeed := 1
 fastSpeed := 15
@@ -11,24 +14,23 @@ mouseModeActive := false
 
 SetTimer(CheckKeys, 10)
 
-; SPACEBAR - tap vs hold
 *Space::
 {
     global spaceHeld
-    spaceHeld := true
 
-    ; Wait to see if it's a tap
-    KeyWait("Space")
-    if !GetKeyState("W", "P") && !GetKeyState("A", "P") && !GetKeyState("S", "P") && !GetKeyState("D", "P") &&
-       !GetKeyState("J", "P") && !GetKeyState("K", "P") && !GetKeyState("F", "P") && !GetKeyState("I", "P") &&
-       !GetKeyState("N", "P") && !GetKeyState("L", "P")
-    {
-        ; If no control keys pressed, it's a tap, send space
+    ; Wait briefly to distinguish tap vs hold
+    if KeyWait("Space", "T0.15") {
+        ; Key released quickly — treat as tap
         Send(" ")
+        return
     }
 
+    ; Otherwise, it's a hold — activate mouse mode
+    spaceHeld := true
+
+    ; Wait until key is released
+    KeyWait("Space")
     spaceHeld := false
-    return
 }
 
 CheckKeys() {
@@ -147,4 +149,3 @@ CheckKeys() {
     }
     Send("{Blind}k")
 }
-   
