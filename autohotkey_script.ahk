@@ -38,10 +38,22 @@ SetTimer(CheckMouseModeTimeout, 100)
 
 ; --- Move mouse only if in mouse mode AND space held ---
 CheckKeys() {
-    global mouseModeActive, cursorSpeed, spaceHeld
+    global mouseModeActive, cursorSpeed, spaceHeld, slowSpeed, defaultSpeed, fastSpeed
 
     if !mouseModeActive || !spaceHeld
         return
+
+    ; Slow speed if n is held
+    if GetKeyState("n", "P") {
+        cursorSpeed := slowSpeed
+    } 
+    ; Fast speed if l is held
+    else if GetKeyState("l", "P") {
+        cursorSpeed := fastSpeed
+    } 
+    else {
+        cursorSpeed := defaultSpeed
+    }
 
     if GetKeyState("W", "P")
         MouseMove(0, -cursorSpeed, 0, "R")
@@ -64,35 +76,7 @@ CheckMouseModeTimeout() {
     }
 }
 
-; --- Adjust cursor speed with n, b and l keys when mouse mode active (n for some reason stopped slowing down the cursor so instead b can slow down the cursor on windows version of my script) ---
-$n::
-{
-    global mouseModeActive, cursorSpeed, slowSpeed
-    if mouseModeActive {
-        cursorSpeed := slowSpeed
-        return  ; block default n key behavior while mouse mode active
-    }
-    Send("{Blind}n")
-}
-
-$b::
-{
-    global mouseModeActive, cursorSpeed, slowSpeed
-    if mouseModeActive {
-        cursorSpeed := slowSpeed
-        return  ; block default n key behavior while mouse mode active
-    }
-    Send("{Blind}b")
-}
-
-n up::
-{
-    global mouseModeActive, cursorSpeed, defaultSpeed
-    if mouseModeActive {
-        cursorSpeed := defaultSpeed
-        return
-    }
-}
+; --- Adjust cursor speed with n and l keys when mouse mode active (n for is hanleded in the CheckKeys function) ---
 
 $l::
 {
@@ -190,3 +174,4 @@ $k::
     }
     Send("{Blind}k")
 }
+ 
