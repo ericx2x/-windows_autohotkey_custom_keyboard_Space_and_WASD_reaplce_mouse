@@ -1,8 +1,4 @@
- Capslock::Esc
-
 #Requires AutoHotkey v2.0
-
-
 CapsLock::Esc
 
 defaultSpeed := 5
@@ -11,34 +7,49 @@ fastSpeed := 15
 cursorSpeed := defaultSpeed
 spaceHeld := false
 mouseModeActive := false
+mouseModeEnabled := true ; Toggle for space mouse mode
 
 SetTimer(CheckKeys, 10)
 
-*Space::
-{
-    global spaceHeld
+; Toggle mouse mode with Right Shift + ?
+>/:: {
+    global mouseModeEnabled
+    if GetKeyState("RShift", "P") {
+        mouseModeEnabled := !mouseModeEnabled
+        ToolTip("Mouse Mode: " (mouseModeEnabled ? "ON" : "OFF"))
+        SetTimer(() => ToolTip(), -1000)
+    } else {
+        Send("/")
+    }
+}
 
-    ; Wait briefly to distinguish tap vs hold
+*Space:: {
+    global spaceHeld, mouseModeEnabled
+
     if KeyWait("Space", "T0.15") {
-        ; Key released quickly — treat as tap
         Send(" ")
         return
     }
 
-    ; Otherwise, it's a hold — activate mouse mode
-    spaceHeld := true
+    if !mouseModeEnabled {
+        return
+    }
 
-    ; Wait until key is released
+    spaceHeld := true
     KeyWait("Space")
     spaceHeld := false
 }
 
 CheckKeys() {
-    global mouseModeActive, cursorSpeed, spaceHeld
+    global mouseModeActive, cursorSpeed, spaceHeld, mouseModeEnabled
+
+    if !mouseModeEnabled {
+        mouseModeActive := false
+        return
+    }
 
     if spaceHeld {
         mouseModeActive := true
-
         if GetKeyState("W", "P")
             MouseMove(0, -cursorSpeed, 0, "R")
         if GetKeyState("S", "P")
@@ -52,20 +63,26 @@ CheckKeys() {
     }
 }
 
+handleKey(keyName) {
+    global mouseModeActive
+    if mouseModeActive
+        return
+    Send("{Blind}" keyName)
+}
+
 *n:: {
     global mouseModeActive, cursorSpeed, slowSpeed
     if mouseModeActive {
         cursorSpeed := slowSpeed
-        return
+    } else {
+        handleKey("n")
     }
-    Send("{Blind}n")
 }
 
 *n up:: {
     global mouseModeActive, cursorSpeed, defaultSpeed
     if mouseModeActive {
         cursorSpeed := defaultSpeed
-        return
     }
 }
 
@@ -73,79 +90,66 @@ CheckKeys() {
     global mouseModeActive, cursorSpeed, fastSpeed
     if mouseModeActive {
         cursorSpeed := fastSpeed
-        return
+    } else {
+        handleKey("l")
     }
-    Send("{Blind}l")
 }
 
 *l up:: {
     global mouseModeActive, cursorSpeed, defaultSpeed
     if mouseModeActive {
         cursorSpeed := defaultSpeed
-        return
     }
 }
 
 *w:: {
-    global mouseModeActive
-    if mouseModeActive
-        return
-    Send("{Blind}w")
+    handleKey("w")
 }
 
 *a:: {
-    global mouseModeActive
-    if mouseModeActive
-        return
-    Send("{Blind}a")
+    handleKey("a")
 }
 
 *s:: {
-    global mouseModeActive
-    if mouseModeActive
-        return
-    Send("{Blind}s")
+    handleKey("s")
 }
 
 *d:: {
-    global mouseModeActive
-    if mouseModeActive
-        return
-    Send("{Blind}d")
+    handleKey("d")
 }
 
 *f:: {
     global mouseModeActive
     if mouseModeActive {
         Click("left")
-        return
+    } else {
+        handleKey("f")
     }
-    Send("{Blind}f")
 }
 
 *i:: {
     global mouseModeActive
     if mouseModeActive {
         Click("right")
-        return
+    } else {
+        handleKey("i")
     }
-    Send("{Blind}i")
 }
 
 *j:: {
     global mouseModeActive
     if mouseModeActive {
         Send("{WheelDown}")
-        return
+    } else {
+        handleKey("j")
     }
-    Send("{Blind}j")
 }
 
 *k:: {
     global mouseModeActive
     if mouseModeActive {
         Send("{WheelUp}")
-        return
+    } else {
+        handleKey("k")
     }
-    Send("{Blind}k")
 }
