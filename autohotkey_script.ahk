@@ -15,8 +15,8 @@ lastSpaceRelease := 0
 SetTimer(CheckKeys, 10)
 SetTimer(CheckMouseModeTimeout, 100)
 
-; --- Activate mouse mode on Space + n ---
-~Space & n::
+; --- Activate mouse mode on Space + j ---
+~Space & j::
 {
     global mouseModeActive
     mouseModeActive := true
@@ -43,18 +43,16 @@ CheckKeys() {
     if !mouseModeActive || !spaceHeld
         return
 
-    ; Slow speed if n is held
-    if GetKeyState("n", "P") {
+    ; Speed adjustments
+    if GetKeyState("j", "P") {
         cursorSpeed := slowSpeed
-    } 
-    ; Fast speed if l is held
-    else if GetKeyState("l", "P") {
+    } else if GetKeyState("k", "P") {
         cursorSpeed := fastSpeed
-    } 
-    else {
+    } else {
         cursorSpeed := defaultSpeed
     }
 
+    ; Movement
     if GetKeyState("W", "P")
         MouseMove(0, -cursorSpeed, 0, "R")
     if GetKeyState("S", "P")
@@ -73,27 +71,6 @@ CheckMouseModeTimeout() {
         mouseModeActive := false
         ToolTip("Mouse Mode: OFF")
         SetTimer(() => ToolTip(), -1000)
-    }
-}
-
-; --- Adjust cursor speed with n and l keys when mouse mode active (n for is hanleded in the CheckKeys function) ---
-
-$l::
-{
-    global mouseModeActive, cursorSpeed, fastSpeed
-    if mouseModeActive {
-        cursorSpeed := fastSpeed
-        return
-    }
-    Send("{Blind}l")
-}
-
-l up::
-{
-    global mouseModeActive, cursorSpeed, defaultSpeed
-    if mouseModeActive {
-        cursorSpeed := defaultSpeed
-        return
     }
 }
 
@@ -134,7 +111,7 @@ $d::
     return
 }
 
-; --- Mouse buttons and wheel: act only if mouse mode active ---
+; --- Mouse buttons ---
 $f::
 {
     global mouseModeActive
@@ -155,23 +132,24 @@ $i::
     Send("{Blind}i")
 }
 
-$j::
+; --- Scroll down: now on 'n' ---
+$n::
 {
     global mouseModeActive
     if mouseModeActive {
         Send("{WheelDown}")
         return
     }
-    Send("{Blind}j")
+    Send("{Blind}n")
 }
 
-$k::
+; --- Scroll up: now on 'l' ---
+$l::
 {
     global mouseModeActive
     if mouseModeActive {
         Send("{WheelUp}")
         return    
     }
-    Send("{Blind}k")
+    Send("{Blind}l")
 }
- 
