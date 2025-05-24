@@ -64,7 +64,7 @@ CheckMouseModeTimeout() {
     }
 }
 
-; --- Adjust cursor speed with n, m and l keys when mouse mode active (n for some reason stopped slowing down the cursor so instead m can slow down the cursor on windows version of my script) ---
+; --- Adjust cursor speed with n, b and l keys when mouse mode active (n for some reason stopped slowing down the cursor so instead b can slow down the cursor on windows version of my script) ---
 $n::
 {
     global mouseModeActive, cursorSpeed, slowSpeed
@@ -75,14 +75,14 @@ $n::
     Send("{Blind}n")
 }
 
-$m::
+$b::
 {
     global mouseModeActive, cursorSpeed, slowSpeed
     if mouseModeActive {
         cursorSpeed := slowSpeed
         return  ; block default n key behavior while mouse mode active
     }
-    Send("{Blind}m")
+    Send("{Blind}b")
 }
 
 n up::
