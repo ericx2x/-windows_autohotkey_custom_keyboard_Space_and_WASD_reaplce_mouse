@@ -46,16 +46,24 @@ RShift & m::
     SetTimer(() => ToolTip(), -1000)
 }
 
-; --- Activate mouse mode on Space + n ---
-~Space & n::
-{
+; --- Activate mouse mode on Space keys ---
+~Space & n::EnableMouseMode()
+~Space & v::EnableMouseMode()
+~Space & w::EnableMouseMode(false)
+~Space & a::EnableMouseMode(false)
+~Space & s::EnableMouseMode(false)
+~Space & d::EnableMouseMode(false)
+
+
+
+EnableMouseMode(showTip := true) {
     global mouseModeActive
     mouseModeActive := true
-    ToolTip("Mouse Mode: ON")
-    SetTimer(() => ToolTip(), -1000)
-    return
+    if showTip {
+      ToolTip("Mouse Mode: ON")
+      SetTimer(() => ToolTip(), -1000)
+    }
 }
-
 ; --- Track space key hold/release ---
 ~Space::
 {
@@ -168,8 +176,9 @@ $d::
 ; --- Mouse buttons and wheel: act only if mouse mode active ---
 $f::
 {
-    global mouseModeActive
-    if mouseModeActive {
+    global spaceHeld
+    
+    if spaceHeld {
         MouseClick("left", , , 1, , "D")  ; Press and hold left mouse button
         return
     }
@@ -178,8 +187,7 @@ $f::
 
 $f up::
 {
-    global mouseModeActive
-    if mouseModeActive {
+    if spaceHeld {
         MouseClick("left", , , 1, , "U")  ; Release left mouse button
         return
     }
@@ -214,3 +222,4 @@ $k::
     }
     Send("{Blind}k")
 }
+ 
