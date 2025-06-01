@@ -1,4 +1,4 @@
-#Requires AutoHotkey v2.0
+ #Requires AutoHotkey v2.0
 
 Capslock::Esc
 
@@ -9,7 +9,7 @@ fastSpeed := 15
 cursorSpeed := defaultSpeed
 
 ; -- State vars --
-mouseModeActive := false
+mouseModeActive := false ; this is required over just spaceHeld because normal typing becomes very inconsisetent otherwise
 spaceHeld := false
 lastSpaceRelease := 0
 
@@ -222,4 +222,5 @@ $k::
     }
     Send("{Blind}k")
 }
+ 
  
