@@ -223,6 +223,13 @@ $f up::
 
 
 $h::
+{
+    global mouseModeActive
+    if mouseModeActive
+        Click("right")
+    else
+        Send("{Blind}h")
+}
 $i::
 {
     global mouseModeActive
