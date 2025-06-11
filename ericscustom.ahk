@@ -1,32 +1,17 @@
+#Auto type string for cetain tasks
+; Hotkey: Escape + 1
+Esc & 1::
+Send, amazing
+return
+
 #Requires AutoHotkey v2.0
 SetCapsLockState("AlwaysOff")
 
 mouseModeGui := Gui("+AlwaysOnTop -Caption +ToolWindow", "Mouse Mode Indicator")
 mouseModeGui.BackColor := "Red"
 mouseModeGui.SetFont("s10 bold", "Segoe UI")
-mouseModeText := mouseModeGui.Add("Text", "Center vIndicatorText cWhite w100 h30", "MOUSE MODE")
+mouseModeText := mouseModeGui.Add("Text", "Center vIndicatorText cBlack w500 h50 BackgroundYellow", "MOUSE MODE")
 mouseModeGui.Hide()
-
-; -- Remap CapsLock to Esc normally, but double-tap CapsLock to toggle mouse mode --
-;capsLastPress := 0
-;doubleTapThreshold := 400 ; ms
-
-;Escape::
-;{
-;    global capsLastPress, mouseModeActive, doubleTapThreshold
-;
-;    now := A_TickCount
-;    if (now - capsLastPress < doubleTapThreshold) {
-;        mouseModeActive := !mouseModeActive
-;        ToolTip("Mouse Mode: " (mouseModeActive ? "ON" : "OFF"))
-;        SetTimer(() => ToolTip(), -1000)
-;        capsLastPress := 0  ; Reset to avoid triple-toggle
-;    } else {
-;        capsLastPress := now
-;        Send("{Esc}")
-;    }
-;    return
-;}
 
 ; --- Toggle Mouse Mode with Escape + Q ---
 Escape & f::
@@ -301,5 +286,21 @@ mouseModeKeys := ["w","a","s","d","l","f","i","j","k","h", "Space","Escape"]
         ToolTip("Exited Mouse Mode (pressed " thisKey ")")
         SetTimer(() => ToolTip(), -1000)
     }
+    return
+}
+
+;exits mouse mode by pressing shift
+~*LShift::
+~*RShift::
+{
+    global mouseModeActive, mouseModeGui
+    if !mouseModeActive
+        return
+
+    mouseModeActive := false
+    mouseModeGui.Hide()
+    SoundBeep(500, 150)  ; Lower pitch = OFF
+    ToolTip("Exited Mouse Mode (pressed Shift)")
+    SetTimer(() => ToolTip(), -1000)
     return
 }
