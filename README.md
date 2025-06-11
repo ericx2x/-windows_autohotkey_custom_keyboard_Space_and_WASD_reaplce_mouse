@@ -1,7 +1,10 @@
 This autohotkey file is a script to make the mose not necessary as the keyboard and holding space while using WASD can replace all mouse functionality. This is especially useful for coding as your hands can remain stationary on a keyboard or bluetooth keyboard making programming much more accessible.
 
 # Usage
-Must press and hold spacebar and tap the n button to enter mouse moving mode with keyboard.
+For capslock ahk file simply double tap capslock and you can begin to move the mouse around.
+
+
+For spacebar hold ahk file, must press and hold spacebar and tap the n button to enter mouse moving mode with keyboard. There are some issues with typing and it always inputing space, so it's not recommended but it does act like the MAC karabiner elements script I made.
 
 Holding spacebar and using WASD is the directions to move the mouse. 
 Holding down 'L' will speed up the mouse movement where holding down 'N' will slow it down. 
