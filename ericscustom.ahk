@@ -1,10 +1,19 @@
-#Auto type string for cetain tasks
+#Requires AutoHotkey v2.0
+; Define the string in a variable
+myString := "xxscytherIl0"
+
 ; Hotkey: Escape + 1
 Esc & 1::
-Send, amazing
-return
+{
+    ; Send the entire string with a delay
+    Send(myString)  ; Send the string
+    Sleep(100)      ; Wait 100 milliseconds after sending
+}
 
-#Requires AutoHotkey v2.0
+
+
+
+
 SetCapsLockState("AlwaysOff")
 
 mouseModeGui := Gui("+AlwaysOnTop -Caption +ToolWindow", "Mouse Mode Indicator")
